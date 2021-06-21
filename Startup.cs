@@ -32,6 +32,8 @@ namespace CourseWork
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.Configure<IdentityOptions>(options => { options.Password.RequireNonAlphanumeric = false; options.Password.RequireUppercase = false; });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

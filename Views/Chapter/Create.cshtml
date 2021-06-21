@@ -1,0 +1,82 @@
+﻿@model CourseWork.Models.ChapterModel
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+<style>
+    * {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+</style>
+
+<script src="~/lib/markdown-it/markdown-it.min.js"></script>
+<script>
+    let markdownDiv;
+    let mdWrapper;
+    let textarea;
+    let md;    
+
+    function onCheckboxChange(event) {
+        if (event.target.checked) {
+            textarea.addEventListener("input", showMarkdown);
+            showMarkdown();
+            mdWrapper.style.display = "block";
+        }
+        else {
+            textarea.removeEventListener("input", showMarkdown);
+            markdownDiv.innerHTML = null;
+            mdWrapper.style.display = "none";
+        }
+    }
+
+    function showMarkdown() {
+        markdownDiv.innerHTML = md.render(textarea.value);
+    }
+
+    window.onload = () => {
+        markdownDiv = document.getElementById("markdowndiv");
+        mdWrapper = document.getElementById("markdownwrapper");
+        textarea = document.getElementById("textarea");
+        md = window.markdownit();
+
+        document.getElementById("checkbox").onchange = onCheckboxChange;
+    }
+</script>
+
+<form method="post">
+    <div>
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input class="form-control" type="text" asp-for="Name" />
+            <span asp-validation-for="Name"></span>
+        </div>
+
+        <div class="form-group form-check">
+            <input id="checkbox" class="form-check-input" type="checkbox" asp-for="IsMarkdown" />
+            <label asp-for="IsMarkdown" class="form-check-label"></label>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Text"></label><br />
+
+            <div class="row">
+
+                <div class="col-md form-group" style="height: 600px">
+                    <textarea id="textarea" class="form-control h-100" asp-for="Text"></textarea>
+                </div>
+
+                <div id="markdownwrapper" class="col-md form-group overflow-auto" style="height: 600px; display: none;">
+                    <div id="markdowndiv" class="form-control overflow-auto border rounded h-100"></div>
+                </div>
+            </div>
+
+            <span asp-validation-for="Text"></span>
+        </div>
+
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" value="Save" />
+        </div>
+    </div>
+</form>

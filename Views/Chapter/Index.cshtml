@@ -1,0 +1,36 @@
+﻿@model CourseWork.Models.ChapterModel
+
+<style>
+    * {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        text-indent: 1.5em;
+        text-align: justify;
+    }
+</style>
+
+<div class="container my-1 mx-4 border rounded">
+    <div class="d-flex justify-content-between align-items-center my-2"> @*Заголовок*@
+        <h2 style="margin-bottom: 0">@Model.Fanfic.Name</h2>
+    </div><hr style="margin: 0">
+
+
+    <div class="my-2">
+        @if (Model.IsMarkdown)
+        {
+            <div id="chapterdiv">@Model.Text</div>
+            <script src="~/lib/markdown-it/markdown-it.min.js"></script>
+            <script>
+                let div = document.getElementById("chapterdiv");
+                div.innerHTML = window.markdownit().render(div.innerHTML);
+            </script>
+        }
+        else
+        {
+            @foreach (string s in Model.Text.Split(Environment.NewLine))
+            {
+                <p style="margin-bottom: 4px;">@s</p>
+            }
+        }
+    </div>
+</div>
