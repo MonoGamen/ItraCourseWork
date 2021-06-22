@@ -9,28 +9,54 @@
     }
 </style>
 
-<div class="container my-1 mx-4 border rounded">
-    <div class="d-flex justify-content-between align-items-center my-2"> @*Заголовок*@
-        <h2 style="margin-bottom: 0">@Model.Fanfic.Name</h2>
-    </div><hr style="margin: 0">
+<div class="container my-1 px-4">
+    <div class="border rounded">
 
+        <div class="d-flex justify-content-between align-items-center my-2"> @*Заголовок*@
+            <h2 style="margin-bottom: 0"><a href="/Fanfic/Index/@Model.FanficModelId">@Model.Fanfic.Name</a></h2>
 
-    <div class="my-2">
-        @if (Model.IsMarkdown)
-        {
-            <div id="chapterdiv">@Model.Text</div>
-            <script src="~/lib/markdown-it/markdown-it.min.js"></script>
-            <script>
-                let div = document.getElementById("chapterdiv");
-                div.innerHTML = window.markdownit().render(div.innerHTML);
-            </script>
-        }
-        else
-        {
-            @foreach (string s in Model.Text.Split(Environment.NewLine))
+            @if (User.Identity.IsAuthenticated)
             {
-                <p style="margin-bottom: 4px;">@s</p>
+                <img id="likeimg" class="mr-2" height="50" src="/images/emptyheart.png" />
+
+                <script src="/lib/signalr/dist/browser/signalr.min.js"></script>
+                <script>
+                    const hubConnection = new signalR.HubConnectionBuilder()
+                        .withUrl("/Like?chapterId=" + "@Model.Id")
+                        .build();
+
+                    hubConnection.on('SetLike', function (isLiked) {
+                        document.getElementById("likeimg").src = "/images/" + (isLiked ? "full" : "empty") + "heart.png"
+                    });
+
+                    document.getElementById("likeimg").addEventListener("click", function () {
+                        hubConnection.invoke("ChangeLike");
+                    });
+
+                    hubConnection.start();
+                </script>
             }
-        }
+        </div><hr style="margin: 0">
+
+
+        <div class="my-2 p-1"> @*Текст главы*@
+            @if (Model.IsMarkdown)
+            {
+                <div id="chapterdiv">@Model.Text</div>
+                <script src="~/lib/markdown-it/markdown-it.min.js"></script>
+                <script>
+                    let div = document.getElementById("chapterdiv");
+                    div.innerHTML = window.markdownit().render(div.innerHTML);
+                </script>
+            }
+            else
+            {
+                @foreach (string s in Model.Text.Split(Environment.NewLine))
+                {
+                    <p style="margin-bottom: 4px;">@s</p>
+                }
+            }
+        </div>
+
     </div>
 </div>

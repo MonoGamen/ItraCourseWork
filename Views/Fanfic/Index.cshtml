@@ -1,0 +1,16 @@
+﻿@model (FanficModel, List<ChapterModel>)
+
+<div class="controller">
+    <h3>@Model.Item1.Name.</h3>
+
+    <div class="p-2">
+        @Model.Item1.Description
+    </div>
+
+    <div class="p-2 pl-4">
+        @foreach(var chapter in Model.Item2)
+        {
+            <a href="/Chapter/Index/@chapter.Id">@chapter.Name</a>
+        }
+    </div>
+</div>

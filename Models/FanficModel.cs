@@ -12,12 +12,8 @@ namespace CourseWork.Models
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public int? FandomModelId { get; set; }
         public FandomModel Fandom { get; set; }
-        public List<TagModel> Tags { get; set; }
         public string UserId { get; set; }
-        public FanficModel()
-        {
-            Tags = new List<TagModel>();
-        }
     }
 }

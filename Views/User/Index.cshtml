@@ -1,9 +1,15 @@
 ﻿@model (List<(FanficModel, List<ChapterModel>)>, bool)
 
 <script>
-    function confirmDelete(event) {
+    function confirmChapterDelete(event) {
         if (confirm("Are you sure?")) {
             window.location.href = "/Chapter/Delete/" + event.target.dataset.chapter;
+        }
+    }
+
+    function confirmFanficDelete(event) {
+        if (confirm("Are you sure?")) {
+            window.location.href = "/Fanfic/Delete/" + event.target.dataset.fanfic;
         }
     }
 </script>
@@ -16,12 +22,17 @@
         {
             <div class="mb-3"> 
                 <div class="row mb-2"> @*Строка фанфика*@
+
                     <div class="col-sm">
-                        <h6 class="mb-0">@tuple.Item1.Name</h6>
+                        <h6 class="mb-0"><a href="/Fanfic/Index/@tuple.Item1.Id" style="color: black;">@tuple.Item1.Name</a></h6>
                     </div>
+
                     <div class="col-sm d-flex flex-wrap">
                         <a class="px-2" href="/Chapter/Create/@tuple.Item1.Id">Add new chapter</a>
+                        <a class="px-2" href="/Fanfic/Edit/@tuple.Item1.Id">Edit</a>
+                        <button class="btn btn-danger py-0" onclick="confirmFanficDelete(event)" data-fanfic="@tuple.Item1.Id">Delete</button>
                     </div>
+
                 </div>
 
                 <div>
@@ -33,7 +44,7 @@
                             </div>
                             <div class="col-sm d-flex flex-wrap align-items-center">
                                 <a class="px-2" href="/Chapter/Edit/@c.Id">Edit</a>
-                                <button class="btn btn-danger py-0" onclick="confirmDelete(event)" data-chapter="@c.Id">Delete</button>
+                                <button class="btn btn-danger py-0" onclick="confirmChapterDelete(event)" data-chapter="@c.Id">Delete</button>
                             </div>
                         </div>
                     }

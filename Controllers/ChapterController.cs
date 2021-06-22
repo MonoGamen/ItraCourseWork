@@ -96,7 +96,7 @@ namespace CourseWork.Controllers
             var chapter = _dbContext.Chapters.FirstOrDefault(c => c.Id == chapterId);
             if (chapter == null || !HasAccess(HttpContext.User, chapter.FanficModelId))
                 return NotFound();
-            return View(_dbContext.Chapters.First(c => c.Id == chapterId));
+            return View(chapter);
         }
 
         [Route("Edit/{chapterId:min(1)}")]

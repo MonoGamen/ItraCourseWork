@@ -7,7 +7,8 @@ namespace CourseWork.Models
 {
     public class TagModel
     {
-        public int Id { get; set; }
+        public Int64 Id { get; set; }
+        public int FanficModelId { get; set; }
         public string Name { get; set; }
     }
 }

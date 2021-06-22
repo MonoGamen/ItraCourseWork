@@ -8,7 +8,7 @@ namespace CourseWork.Models
 {
     public class LikeModel
     {
-        public int Id { get; set; }
+        public Int64 Id { get; set; }
         [Required]
         public string UserId { get; set; }
         [Required]

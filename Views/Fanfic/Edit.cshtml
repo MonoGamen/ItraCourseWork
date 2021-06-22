@@ -1,8 +1,8 @@
-﻿@section Scripts {
+﻿@model FanficModel
+
+@section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
-
-@model CourseWork.Models.FanficModel
 
 <form method="post">
     <div>
@@ -17,6 +17,10 @@
             <textarea class="form-control" asp-for="Description" rows="5"></textarea>
             <span asp-validation-for="Description"></span>
         </div>
+
+        <input type="hidden" asp-for="Id">
+        <input type="hidden" asp-for="FandomModelId">
+        <input type="hidden" asp-for="UserId">
 
         <div class="form-group">
             <input class="btn btn-primary" type="submit" value="Save" />
