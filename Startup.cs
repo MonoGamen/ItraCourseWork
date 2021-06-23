@@ -68,6 +68,7 @@ namespace CourseWork
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
                 endpoints.MapHub<Hubs.LikeHub>("/Like");
+                endpoints.MapHub<Hubs.MarkHub>("/Mark");
             });
         }
     }

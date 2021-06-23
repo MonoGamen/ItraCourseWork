@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 
 namespace CourseWork.Models
 {
-    public class TagModel
+    public class EditFanficViewModel
     {
-        public Int64 Id { get; set; }
-        public int FanficModelId { get; set; }
         public FanficModel Fanfic { get; set; }
-        public string Name { get; set; }
+        public string[] Tags { get; set; }
     }
 }

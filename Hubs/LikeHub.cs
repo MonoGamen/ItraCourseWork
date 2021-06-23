@@ -23,7 +23,7 @@ namespace CourseWork.Hubs
         {
             int chapterId = int.Parse(context.GetHttpContext().Request.Query["chapterId"].ToString().Split("/").Last());
             string userId = _userManager.GetUserId(context.User);
-            var like = _dbContext.Likes.Where(l => l.ChapterId == chapterId && l.UserId == userId).FirstOrDefault();
+            var like = _dbContext.Likes.Where(l => l.ChapterModelId == chapterId && l.UserId == userId).FirstOrDefault();
 
             return (chapterId, userId, like);
         }
@@ -46,7 +46,7 @@ namespace CourseWork.Hubs
             }
             else
             { 
-                _dbContext.Likes.Add(new LikeModel() { ChapterId = chapterId, UserId = userId });
+                _dbContext.Likes.Add(new LikeModel() { ChapterModelId = chapterId, UserId = userId });
             }
 
             _dbContext.SaveChanges();

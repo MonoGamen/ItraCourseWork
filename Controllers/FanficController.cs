@@ -34,17 +34,17 @@ namespace CourseWork.Controllers
 
         [Route("Create")]
         [HttpPost]
-        public IActionResult Create(FanficModel model)
+        public IActionResult Create(FanficModel model, string[] tags)
         {
             model.UserId = _userManager.GetUserId(HttpContext.User);
             model.Id = 0;
 
             _dbContext.Fanfics.Add(model);
             _dbContext.SaveChanges();
+            SaveTagsAndDb(model.Id, tags);
 
             return RedirectPermanent("/User/Index");
         }
-
 
         [Route("Index/{fanficID:min(1)}")]
         public IActionResult Index(int fanficId)
@@ -54,42 +54,37 @@ namespace CourseWork.Controllers
                 return NotFound();
 
             var chapters = _dbContext.Chapters.Where(c => c.FanficModelId == fanficId).OrderBy(c => c.Index).ToList();
-            return View((fanfic, chapters));
+            var tags = _dbContext.Tags.Where(t => t.FanficModelId == fanficId).Select(t => t.Name).ToList();
+            return View((fanfic, chapters, tags));
         }
-
-        private bool HasAccess(ClaimsPrincipal user, FanficModel model)
-        {
-            var userId = _userManager.GetUserId(user);
-
-            if (model == null || model.UserId != userId)
-                return false;
-            return true;
-        }
-
 
         [Route("Edit/{fanficId:min(1)}")]
         [HttpGet]
         public IActionResult Edit(int fanficId)
         {
             var fanfic = _dbContext.Fanfics.FirstOrDefault(f => f.Id == fanficId);
+            var tags = _dbContext.Tags.Where(t => t.FanficModelId == fanficId).Select(t => t.Name).ToArray();
 
             if (!HasAccess(HttpContext.User, fanfic))
                 return NotFound();
-            return View(fanfic);
+            return View(new EditFanficViewModel() { Fanfic = fanfic, Tags = tags});
         }
 
         [Route("Edit/{fanficId:min(1)}")]
         [HttpPost]
-        public IActionResult Edit(FanficModel model, int fanficId)
+        public IActionResult Edit(EditFanficViewModel viewModel, int fanficId)
         {
-             if (!HasAccess(HttpContext.User, model))
+            var fanfic = viewModel.Fanfic;
+            var tags = viewModel.Tags == null ? new string[0] : viewModel.Tags;
+
+            if (!HasAccess(HttpContext.User, fanfic))
                 return NotFound();
 
-            _dbContext.Fanfics.Update(model);
-            _dbContext.SaveChanges();
+            _dbContext.Fanfics.Update(fanfic);
+            UpdateTagsAndSave(fanficId, tags);
             return RedirectPermanent("/User/Index");
         }
-        
+
         [Route("Delete/{fanficId:min(1)}")]
         public IActionResult Delete(int fanficId)
         { 
@@ -104,6 +99,28 @@ namespace CourseWork.Controllers
         }
 
 
+        private bool HasAccess(ClaimsPrincipal user, FanficModel model)
+        {
+            var userId = _userManager.GetUserId(user);
+
+            if (model == null || model.UserId != userId)
+                return false;
+            return true;
+        }
+
+        private void SaveTagsAndDb(int fanficId, string[] tags)
+        {
+            foreach (string tag in tags)
+                _dbContext.Tags.Add(new TagModel() { FanficModelId = fanficId, Name = tag });
+            _dbContext.SaveChanges();
+        }     
+
+        private void UpdateTagsAndSave(int fanficId, string[] tags)
+        {
+            _dbContext.Tags.RemoveRange(_dbContext.Tags.Where(t => t.FanficModelId == fanficId));
+            SaveTagsAndDb(fanficId, tags);
+        }
+       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

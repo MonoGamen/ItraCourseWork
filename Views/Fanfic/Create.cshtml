@@ -19,6 +19,54 @@
         </div>
 
         <div class="form-group">
+            <div class="d-flex flex-wrap justify-content-end align-items-center mb-1" id="showtagsdiv"></div>
+            <div id="tagsdiv" hidden></div>
+
+            <div class="d-flex align-items-center justify-content-end">
+                <input id="inputtag" class="form-control">
+                <button type="button" class="btn btn-primary mx-1" onclick="AddTag()">Add</button>
+                <button type="button" class="btn btn-danger" onclick="ClearTags()">Clear</button>
+            </div>
+
+            <script>
+                let tagsDiv = document.getElementById("tagsdiv");
+                let showTagsDiv = document.getElementById("showtagsdiv");
+                let inputTag = document.getElementById("inputtag");
+                let tags = [];
+                
+                function AddTag() {
+                    let tagName = inputTag.value.trim();
+
+                    if (tagName && !tags.includes(tagName)) {
+                        showTag = document.createElement("div");
+                        showTag.innerHTML = tagName;
+                        showTag.className = "rounded bg-warning px-2 mx-1";
+                        showTagsDiv.appendChild(showTag);
+
+                        formTag = document.createElement("input");
+                        formTag.type = "hidden";
+                        formTag.value = tagName;
+                        formTag.name = "tags"
+                        tagsDiv.appendChild(formTag);
+
+                        tags.push(tagName);
+                    }
+                }
+                function ClearTags() {
+                    while (tagsDiv.firstChild) {
+                        tagsDiv.removeChild(tagsDiv.firstChild);
+                    }
+
+                    while (showTagsDiv.firstChild) {
+                        showTagsDiv.removeChild(showTagsDiv.firstChild);
+                    }
+
+                    tags = [];
+                }
+            </script>
+        </div>
+
+        <div class="form-group">
             <input class="btn btn-primary" type="submit" value="Save" />
         </div>
     </div>

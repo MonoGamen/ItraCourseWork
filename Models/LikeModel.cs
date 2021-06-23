@@ -12,6 +12,7 @@ namespace CourseWork.Models
         [Required]
         public string UserId { get; set; }
         [Required]
-        public int ChapterId { get; set; }
+        public int ChapterModelId { get; set; }
+        public ChapterModel Chapter { get; set; }
     }
 }

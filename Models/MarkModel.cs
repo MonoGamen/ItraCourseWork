@@ -13,7 +13,8 @@ namespace CourseWork.Models
         public string UserId { get; set; }
 
         [Required]
-        public int FanficId { get; set; }
+        public int FanficModelId { get; set; }
+        public FanficModel Fanfic { get; set; }
 
         [Required]
         public int Mark { get; set; }

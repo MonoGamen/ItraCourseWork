@@ -1,4 +1,4 @@
-﻿@model FanficModel
+﻿@model EditFanficViewModel
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
@@ -7,20 +7,83 @@
 <form method="post">
     <div>
         <div class="form-group">
-            <label asp-for="Name"></label><br />
-            <input class="form-control" type="text" asp-for="Name" />
-            <span asp-validation-for="Name"></span>
+            <label asp-for="Fanfic.Name"></label><br />
+            <input class="form-control" type="text" asp-for="Fanfic.Name" />
+            <span asp-validation-for="Fanfic.Name"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Description"></label><br />
-            <textarea class="form-control" asp-for="Description" rows="5"></textarea>
-            <span asp-validation-for="Description"></span>
+            <label asp-for="Fanfic.Description"></label><br />
+            <textarea class="form-control" asp-for="Fanfic.Description" rows="5"></textarea>
+            <span asp-validation-for="Fanfic.Description"></span>
         </div>
 
-        <input type="hidden" asp-for="Id">
-        <input type="hidden" asp-for="FandomModelId">
-        <input type="hidden" asp-for="UserId">
+        <input type="hidden" asp-for="Fanfic.Id">
+        <input type="hidden" asp-for="Fanfic.FandomModelId">
+        <input type="hidden" asp-for="Fanfic.UserId">
+        <input type="hidden" asp-for="Fanfic.MarkAverage">
+        <input type="hidden" asp-for="Fanfic.MarkCount">
+
+        <div class="form-group">
+            <div class="d-flex flex-wrap justify-content-end align-items-center mb-1" id="showtagsdiv">
+                @foreach(var tag in Model.Tags)
+                {
+                    <div class="rounded bg-warning px-2 mx-1">
+                        @tag
+                    </div>
+                }
+            </div>
+            <div id="tagsdiv" hidden>
+                @foreach (var tag in Model.Tags)
+                {
+                    <input type="hidden" value="@tag" name="Tags" />
+                }
+            </div>
+
+            <div class="d-flex align-items-center justify-content-end">
+                <input id="inputtag" class="form-control">
+                <button type="button" class="btn btn-primary mx-1" onclick="AddTag()">Add</button>
+                <button type="button" class="btn btn-danger" onclick="ClearTags()">Clear</button>
+            </div>
+
+            <script>
+                let tagsDiv = document.getElementById("tagsdiv");
+                let showTagsDiv = document.getElementById("showtagsdiv");
+                let inputTag = document.getElementById("inputtag");
+                let tags = Array.from(tagsDiv.children).map((el) => { return el.value });
+
+                function AddTag() {
+                    let tagName = inputTag.value.trim();
+
+                    if (tagName && !tags.includes(tagName)) {
+                        showTag = document.createElement("div");
+                        showTag.innerHTML = tagName;
+                        showTag.className = "rounded bg-warning px-2 mx-1";
+                        showTagsDiv.appendChild(showTag);
+
+                        formTag = document.createElement("input");
+                        formTag.type = "hidden";
+                        formTag.value = tagName;
+                        formTag.name = "tags";
+                        tagsDiv.appendChild(formTag);
+
+                        tags.push(tagName);
+                    }
+                }
+                function ClearTags() {
+                    while (tagsDiv.firstChild) {
+                        tagsDiv.removeChild(tagsDiv.firstChild);
+                    }
+
+                    while (showTagsDiv.firstChild) {
+                        showTagsDiv.removeChild(showTagsDiv.firstChild);
+                    }
+
+                    tags = [];
+                }
+            </script>
+        </div>
+
 
         <div class="form-group">
             <input class="btn btn-primary" type="submit" value="Save" />

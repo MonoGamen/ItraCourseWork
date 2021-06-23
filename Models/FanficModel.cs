@@ -15,5 +15,7 @@ namespace CourseWork.Models
         public int? FandomModelId { get; set; }
         public FandomModel Fandom { get; set; }
         public string UserId { get; set; }
+        public int MarkCount { get; set; } = 0;
+        public double MarkAverage { get; set; } = 0;
     }
 }
