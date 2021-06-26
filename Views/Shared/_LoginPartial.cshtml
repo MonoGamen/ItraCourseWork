@@ -6,7 +6,11 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a href="/User/Index" class="nav-link text-dark">Hello @User.Identity.Name!</a>
+        @{ 
+            var user = await UserManager.GetUserAsync(User);
+            string id = user.Id;
+        }
+        <a href="/User/Index/@id" class="nav-link text-dark">Hello @User.Identity.Name!</a>
     </li>
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">

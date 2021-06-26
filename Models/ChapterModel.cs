@@ -19,5 +19,6 @@ namespace CourseWork.Models
         public string Image { get; set; }
         public int FanficModelId { get; set; }
         public FanficModel Fanfic { get; set; } 
+        public DateTime LastEdit { get; set; }
     }
 }

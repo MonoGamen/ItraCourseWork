@@ -25,6 +25,18 @@ namespace CourseWork.Controllers
             _dbContext = dbContext;
         }
 
+        [Route("Index/{urlUserId}")]
+        public async Task<IActionResult> IndexAsync([FromRoute] string urlUserId)
+        { 
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (!(await IsAdminOrValidUserAsync(currentUser, urlUserId)))
+                return NotFound();
+       
+            var fanfics = await GetUserFanficsAsync(urlUserId);
+            return View((fanfics, urlUserId));
+        }
+
         private async Task<List<(FanficModel, List<ChapterModel>)>> GetUserFanficsAsync(string userId)
         {
             var fanfics = _dbContext.Fanfics.Where(f => f.UserId == userId).ToList();
@@ -37,13 +49,17 @@ namespace CourseWork.Controllers
             return output;
         }
 
-
-        [Route("Index")]
-        public async Task<IActionResult> IndexAsync()
+        private async Task<bool> IsAdminOrValidUserAsync(IdentityUser user, string id)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            var fanfics = await GetUserFanficsAsync(user.Id);
-            return View((fanfics, true));
+            var roles = await _userManager.GetRolesAsync(user);
+            var userFromUrl = await _userManager.FindByIdAsync(id);
+
+            if (userFromUrl == null)
+                return false;
+
+            if (user.Id == id || roles.Contains("admin"))
+                return true;
+            return false;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

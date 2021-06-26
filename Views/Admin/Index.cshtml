@@ -1,0 +1,59 @@
+﻿@model (List<EditUserViewModel>, string)
+
+<div class="d-flex align-items-center justify-content-end mb-2">
+    <input id="searchinput" class="form-control mr-sm-2" style="width: 400px" type="search" placeholder="Search" aria-label="Search" value="@Model.Item2">
+    <button id="searchbutton" class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="Search(event)">Search</button>
+    <button id="clearbutton" class="btn btn-outline-dark my-2 my-sm-0" type="button" onclick="Clear()">Clear</button>
+
+    <script>
+        function Search(event) {
+            document.location.href = "/Admin/Index?" + new URLSearchParams({ "search": document.getElementById("searchinput").value }).toString();
+        }
+
+        function Clear(event) {
+            document.location.href = "/Admin/Index";
+        }
+    </script>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Email</th>
+            <th scope="col">IsBlocked</th>
+            <th scope="col">IsAdmin</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Item1)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @if(user.IsBlocked)
+                    {
+                        <a href="/Admin/Unblock/@user.Id">Unblock user</a>
+                    }
+                    else
+                    {
+                        <a href="/Admin/Block/@user.Id">Block user</a>
+                    }
+                </td>
+                <td>
+                    @if(user.IsAdmin)
+                    {
+                        <a href="/Admin/RemoveAdmin/@user.Id">Remove from admins</a>
+                    }
+                    else
+                    {
+                        <a href="/Admin/AddAdmin/@user.Id">Add to admins</a>
+                    }
+                </td>
+                <td>
+                    <a href="/Admin/Delete/@user.Id">Delete user</a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>

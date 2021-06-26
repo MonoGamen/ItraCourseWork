@@ -26,17 +26,116 @@ namespace CourseWork.Controllers
             _dbContext = dbContext;
         }
 
-        private bool HasAccess(ClaimsPrincipal user, int fanficId)
+        [Route("Create/{urlUserId}/{fanficId:min(1)}")]
+        [HttpGet]
+        public async Task<IActionResult> CreateAsync([FromRoute] string urlUserId, int fanficId)
+        {   
+            if (!await IsValid(HttpContext.User, urlUserId, fanficId))
+                return NotFound();
+            return View();
+        }
+
+        [Route("Create/{urlUserId}/{fanficId:min(1)}")]
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync(ChapterModel model, [FromRoute] string urlUserId, int fanficId)
+        {
+            if (!await IsValid(HttpContext.User, urlUserId, fanficId))
+                return NotFound();
+
+            SaveNewChapter(model, fanficId);
+            return RedirectPermanent($"/User/Index/{urlUserId}");
+        }
+
+
+        [Route("Index/{chapterId:min(1)}")]
+        [AllowAnonymous]
+        public IActionResult Index(int chapterId)
+        {
+            var chapter = _dbContext.Chapters.Include(c => c.Fanfic).FirstOrDefault(c => c.Id == chapterId);
+            if (chapter == null)
+                return NotFound();
+            return View(chapter);
+        }
+
+
+        [Route("Edit/{urlUserId}/{chapterId:min(1)}")]
+        [HttpGet]
+        public async Task<IActionResult> EditAsync([FromRoute] string urlUserId, int chapterId)
+        {
+            var chapter = _dbContext.Chapters.FirstOrDefault(c => c.Id == chapterId);
+            if (chapter == null || !await IsValid(HttpContext.User, urlUserId, chapter.FanficModelId))
+                return NotFound();
+            return View(chapter);
+        }
+
+        [Route("Edit/{urlUserId}/{chapterId:min(1)}")]
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(ChapterModel model, [FromRoute] string urlUserId, int chapterId)
+        {
+             if (!await IsValid(HttpContext.User, urlUserId, model.FanficModelId))
+                return NotFound();
+
+            UpdateChapter(model);
+            return RedirectPermanent($"/User/Index/{urlUserId}");
+        }
+        
+        [Route("Delete/{urlUserId}/{chapterId:min(1)}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] string urlUserId, int chapterId)
+        { 
+            var chapter = _dbContext.Chapters.FirstOrDefault(c => c.Id == chapterId);
+            int fanficId = chapter.FanficModelId;
+
+            if (chapter == null || !await IsValid(HttpContext.User, urlUserId, chapter.FanficModelId))
+                return NotFound();
+
+            _dbContext.Chapters.Remove(chapter);
+            _dbContext.SaveChanges();
+            UpdateOrder(fanficId);
+
+            return RedirectPermanent($"/User/Index/{urlUserId}");
+        }
+
+        private async Task<bool> IsValid(ClaimsPrincipal principal, string urlUserId, int fanficId)
+        {
+            return await IsAdminOrValidUserAsync(principal, urlUserId) && HasAccessToFanfic(urlUserId, fanficId);
+        }
+        private async Task<bool> IsAdminOrValidUserAsync(ClaimsPrincipal principal, string urlUserId)
+        {
+            var user = await _userManager.GetUserAsync(principal);
+            var roles = await _userManager.GetRolesAsync(user);
+            var userFromUrl = await _userManager.FindByIdAsync(urlUserId);
+
+            if (userFromUrl == null)
+                return false;
+            
+            if (user.Id == urlUserId || roles.Contains("admin"))
+                return true;
+            return false;
+        }
+        private bool HasAccessToFanfic(string urlUserId, int fanficId)
         {
             var fanfic = _dbContext.Fanfics.FirstOrDefault(f => f.Id == fanficId);
-            var userId = _userManager.GetUserId(user);
 
-            if (fanfic == null || fanfic.UserId != userId)
+            if (fanfic == null || fanfic.UserId != urlUserId)
                 return false;
             return true;
         }
+        private void UpdateOrder(int fanficId)
+        {
+            var chapters = _dbContext.Chapters.Where(c => c.FanficModelId == fanficId).OrderBy(c => c.Index).ToList();
+            for (int i = 0; i < chapters.Count; i++)
+            {
+                if(chapters[i].Index != i)
+                {
+                    chapters[i].Index = i;
+                    _dbContext.Chapters.Update(chapters[i]);
+                }
+            }
+            _dbContext.SaveChanges();
+        }
         private void SaveChapter(ChapterModel model)
         {
+            model.LastEdit = DateTime.Now;
             _dbContext.Chapters.Add(model);
             _dbContext.SaveChanges();
         }
@@ -52,78 +151,10 @@ namespace CourseWork.Controllers
         }
         private void UpdateChapter(ChapterModel model)
         {
+            model.LastEdit = DateTime.Now;
             _dbContext.Chapters.Update(model);
             _dbContext.SaveChanges();
         }
-
-
-        [Route("Create/{fanficId:min(1)}")]
-        [HttpGet]
-        public IActionResult Create(int fanficId)
-        {
-            if (!HasAccess(HttpContext.User, fanficId))
-                return NotFound();
-            return View();
-        }
-
-        [Route("Create/{fanficId:min(1)}")]
-        [HttpPost]
-        public IActionResult Create(ChapterModel model, int fanficId)
-        {
-            if (!HasAccess(HttpContext.User, fanficId))
-                return NotFound();
-
-            SaveNewChapter(model, fanficId);
-            return RedirectPermanent("/User/Index");
-        }
-
-
-        [Route("Index/{chapterId:min(1)}")]
-        [AllowAnonymous]
-        public IActionResult Index(int chapterId)
-        {
-            var chapter = _dbContext.Chapters.Include(c => c.Fanfic).FirstOrDefault(c => c.Id == chapterId);
-            if (chapter == null)
-                return NotFound();
-            return View(chapter);
-        }
-
-
-        [Route("Edit/{chapterId:min(1)}")]
-        [HttpGet]
-        public IActionResult Edit(int chapterId)
-        {
-            var chapter = _dbContext.Chapters.FirstOrDefault(c => c.Id == chapterId);
-            if (chapter == null || !HasAccess(HttpContext.User, chapter.FanficModelId))
-                return NotFound();
-            return View(chapter);
-        }
-
-        [Route("Edit/{chapterId:min(1)}")]
-        [HttpPost]
-        public IActionResult Edit(ChapterModel model, int chapterId)
-        {
-             if (!HasAccess(HttpContext.User, model.FanficModelId))
-                return NotFound();
-
-            UpdateChapter(model);
-            return RedirectPermanent("/User/Index");
-        }
-
-        
-        [Route("Delete/{chapterId:min(1)}")]
-        public IActionResult Delete(int chapterId)
-        { 
-            var chapter = _dbContext.Chapters.FirstOrDefault(c => c.Id == chapterId);
-            if (chapter == null || !HasAccess(HttpContext.User, chapter.FanficModelId))
-                return NotFound();
-
-            _dbContext.Chapters.Remove(chapter);
-            _dbContext.SaveChanges();
-
-            return RedirectPermanent("/User/Index");
-        }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

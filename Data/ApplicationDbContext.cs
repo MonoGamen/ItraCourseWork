@@ -15,6 +15,7 @@ namespace CourseWork.Data
         public DbSet<FandomModel> Fandoms { get; set; }
         public DbSet<MarkModel> Marks { get; set; }
         public DbSet<LikeModel> Likes { get; set; }
+        public DbSet<BookmarkModel> Bookmarks { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

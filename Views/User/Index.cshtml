@@ -1,15 +1,15 @@
-﻿@model (List<(FanficModel, List<ChapterModel>)>, bool)
+﻿@model (List<(FanficModel, List<ChapterModel>)>, string)
 
 <script>
     function confirmChapterDelete(event) {
         if (confirm("Are you sure?")) {
-            window.location.href = "/Chapter/Delete/" + event.target.dataset.chapter;
+            window.location.href = "/Chapter/Delete/" + "@Model.Item2" + "/" + event.target.dataset.chapter;
         }
     }
 
     function confirmFanficDelete(event) {
         if (confirm("Are you sure?")) {
-            window.location.href = "/Fanfic/Delete/" + event.target.dataset.fanfic;
+            window.location.href = "/Fanfic/Delete/" + "@Model.Item2" + "/" + event.target.dataset.fanfic;
         }
     }
 </script>
@@ -32,8 +32,8 @@
                     </div>
 
                     <div class="col-sm d-flex flex-wrap">
-                        <a class="px-2" href="/Chapter/Create/@tuple.Item1.Id">Add new chapter</a>
-                        <a class="px-2" href="/Fanfic/Edit/@tuple.Item1.Id">Edit</a>
+                        <a class="px-2" href="/Chapter/Create/@Model.Item2/@tuple.Item1.Id">Add new chapter</a>
+                        <a class="px-2" href="/Fanfic/Edit/@Model.Item2/@tuple.Item1.Id">Edit</a>
                         <button class="btn btn-danger py-0" onclick="confirmFanficDelete(event)" data-fanfic="@tuple.Item1.Id">Delete</button>
                     </div>
 
@@ -47,7 +47,7 @@
                                 <a href="/Chapter/Index/@c.Id"><p class="pl-3 mb-0">@c.Name</p></a>
                             </div>
                             <div class="col-sm d-flex flex-wrap align-items-center">
-                                <a class="px-2" href="/Chapter/Edit/@c.Id">Edit</a>
+                                <a class="px-2" href="/Chapter/Edit/@Model.Item2/@c.Id">Edit</a>
                                 <button class="btn btn-danger py-0" onclick="confirmChapterDelete(event)" data-chapter="@c.Id">Delete</button>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
             </div>
         }
         <div class="d-flex flex-wrap justify-content-between">
-            <a href="/Fanfic/Create">Create new fanfic</a>
+            <a href="/Fanfic/Create/@Model.Item2">Create new fanfic</a>
         </div>
     </div>
 </div>

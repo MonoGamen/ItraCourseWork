@@ -1,5 +1,8 @@
 ﻿<nav class="navbar navbar-light bg-light">
-    <a class="nav-link" href="/User/Index">Your fanfics</a>
-    <a class="nav-link" href="/User/Bookmarks">Your bookmarks</a>
-    <a class="nav-link" href="/User/Settings">Your settings</a>
+    @{
+        var userId = Context.Request.Path.ToString().Split("/").Last();
+    }
+    <a class="nav-link" href="/User/Index/@userId">Your fanfics</a>
+    <a class="nav-link" href="/User/Bookmarks/@userId">Your bookmarks and recomendations</a>
+    <a class="nav-link" href="/User/Settings/@userId">Your settings</a>
 </nav>
