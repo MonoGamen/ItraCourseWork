@@ -31,7 +31,8 @@ namespace CourseWork.Hubs
         public override async Task OnConnectedAsync()
         {
             var (fanficId, userId, mark) = GetValues(Context);
-            await Clients.Caller.SendAsync("SetMark", mark != null ? mark.Mark : 0);
+            await Clients.Caller.SendAsync("SetMark", mark != null ? mark.Mark : 0, 
+                                                      _dbContext.Fanfics.Where(f => f.Id == fanficId).First().MarkAverage);
             await base.OnConnectedAsync();
         }
 
@@ -66,8 +67,6 @@ namespace CourseWork.Hubs
 
             _dbContext.Fanfics.Update(fanfic);
         }
-
-
         private bool ManageMark(MarkModel mark, int newMark, FanficModel fanfic, int fanficId, string userId)
         {
             if (mark != null)
@@ -97,7 +96,7 @@ namespace CourseWork.Hubs
             bool deletedMark = ManageMark(mark, newMark, fanfic, fanficId, userId);            
 
             _dbContext.SaveChanges();
-            await Clients.Caller.SendAsync("SetMark", deletedMark ? 0 : newMark);
+            await Clients.Caller.SendAsync("SetMark", deletedMark ? 0 : newMark, fanfic.MarkAverage);
         }
     }
 }

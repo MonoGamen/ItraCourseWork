@@ -1,4 +1,5 @@
-﻿using CourseWork.Models;
+﻿using CourseWork.Data;
+using CourseWork.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,12 +12,31 @@ namespace CourseWork.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController()
-        { }
+        ApplicationDbContext _dbContext;
+        public HomeController(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
+        [Route("/")]
         public IActionResult Index()
         {
-            return View();
+            var lastEditChapters = _dbContext.Chapters.OrderByDescending(c => c.LastEdit).ToList();
+            var topFanfics = _dbContext.Fanfics.OrderByDescending(f => f.MarkAverage).ToList();
+            return View((lastEditChapters, topFanfics));
+        }
+
+        [Route("Menu")]
+        public IActionResult Menu(char letter)
+        {
+            string alphabetInMenu = "ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ";
+            IEnumerable<FanficModel> fanfics;
+
+            if (char.IsLetter(letter))    
+                fanfics = _dbContext.Fanfics.AsEnumerable().Where(f => char.ToUpper(f.Name[0]) == letter);
+            else
+                fanfics = _dbContext.Fanfics.AsEnumerable().Where(f => !alphabetInMenu.Contains(char.ToUpper(f.Name[0])));
+            return View(fanfics.ToList());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

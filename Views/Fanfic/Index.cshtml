@@ -5,7 +5,7 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center my-2"> @*Заголовок*@
         <h3>@Model.Item1.Name.</h3>
 
-        <p class="mb-0">Average rating: @Math.Round(Model.Item1.MarkAverage, 2)</p>
+        <p class="mb-0">Average rating: <span id="average">@Math.Round(Model.Item1.MarkAverage, 2)</span></p>
 
         @if (User.Identity.IsAuthenticated)
         {
@@ -44,7 +44,6 @@
 
                 function onImgClick(event) {
                     let tempMark = +event.target.dataset.mark;
-                    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                     hubConnection.invoke("ChangeMark", tempMark);
                 }
 
@@ -53,13 +52,13 @@
                     .withUrl("/Mark?fanficId=" + "@Model.Item1.Id")
                     .build();
 
-                hubConnection.on('SetMark', function (value) {
+                hubConnection.on('SetMark', function (value, aver) {
                     mark = value;
                     setMark(mark);
+                    document.getElementById("average").innerHTML = aver; 
                 });
 
                 for (let img of images) {
-                    console.log("aaaaaaa");
                     img.onclick = onImgClick;
                 }
 

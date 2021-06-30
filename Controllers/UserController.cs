@@ -37,6 +37,35 @@ namespace CourseWork.Controllers
             return View((fanfics, urlUserId));
         }
 
+        [Route("Bookmarks/{urlUserId}")]
+        public async Task<IActionResult> BookmarksAsync([FromRoute] string urlUserId)
+        { 
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            
+            if (!(await IsAdminOrValidUserAsync(currentUser, urlUserId)))
+                return NotFound();
+
+            var bookmarks = _dbContext.Bookmarks.Where(b => b.UserId == urlUserId).Include(b => b.Fanfic).ToList();
+            return View((bookmarks, urlUserId));
+        }
+
+        [Route("BookmarkDelete/{urlUserId}/{fanficId:min(1)}")]
+        public async Task<IActionResult> BookmarkDeleteAsync([FromRoute] string urlUserId, int fanficId)
+        { 
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            if (!(await IsAdminOrValidUserAsync(currentUser, urlUserId)))
+                return NotFound();
+
+            var bookmark = _dbContext.Bookmarks.Where(b => b.FanficModelId == fanficId && b.UserId == urlUserId).FirstOrDefault();
+            if (bookmark != null)
+            {
+                _dbContext.Bookmarks.Remove(bookmark);
+                _dbContext.SaveChanges();
+            }
+            return RedirectPermanent($"/User/Bookmarks/{urlUserId}");
+        }
+
+
         private async Task<List<(FanficModel, List<ChapterModel>)>> GetUserFanficsAsync(string userId)
         {
             var fanfics = _dbContext.Fanfics.Where(f => f.UserId == userId).ToList();
@@ -48,7 +77,6 @@ namespace CourseWork.Controllers
             }
             return output;
         }
-
         private async Task<bool> IsAdminOrValidUserAsync(IdentityUser user, string id)
         {
             var roles = await _userManager.GetRolesAsync(user);

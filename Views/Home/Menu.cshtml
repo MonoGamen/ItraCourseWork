@@ -1,0 +1,73 @@
+﻿@model List<FanficModel>
+
+<div class="container border border-primary rounded my-2">
+    <div class="d-flex align-items-center justify-content-between flex-wrap">
+        <a href="/Menu?letter=A">A</a>
+        <a href="/Menu?letter=B">B</a>
+        <a href="/Menu?letter=C">C</a>
+        <a href="/Menu?letter=D">D</a>
+        <a href="/Menu?letter=E">E</a>
+        <a href="/Menu?letter=F">F</a>
+        <a href="/Menu?letter=G">G</a>
+        <a href="/Menu?letter=H">H</a>
+        <a href="/Menu?letter=I">I</a>
+        <a href="/Menu?letter=J">J</a>
+        <a href="/Menu?letter=K">K</a>
+        <a href="/Menu?letter=L">L</a>
+        <a href="/Menu?letter=M">M</a>
+        <a href="/Menu?letter=N">N</a>
+        <a href="/Menu?letter=O">O</a>
+        <a href="/Menu?letter=P">P</a>
+        <a href="/Menu?letter=Q">Q</a>
+        <a href="/Menu?letter=R">R</a>
+        <a href="/Menu?letter=S">S</a>
+        <a href="/Menu?letter=T">T</a>
+        <a href="/Menu?letter=U">U</a>
+        <a href="/Menu?letter=V">V</a>
+        <a href="/Menu?letter=W">W</a>
+        <a href="/Menu?letter=X">X</a>
+        <a href="/Menu?letter=Y">Y</a>
+        <a href="/Menu?letter=Z">Z</a>
+        <a href="/Menu?letter=#">#</a>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between flex-wrap">
+        <a href="/Menu?letter=А">А</a>
+        <a href="/Menu?letter=Б">Б</a>
+        <a href="/Menu?letter=В">В</a>
+        <a href="/Menu?letter=Г">Г</a>
+        <a href="/Menu?letter=Д">Д</a>
+        <a href="/Menu?letter=Е">Е</a>
+        <a href="/Menu?letter=Ё">Ё</a>
+        <a href="/Menu?letter=Ж">Ж</a>
+        <a href="/Menu?letter=З">З</a>
+        <a href="/Menu?letter=И">И</a>
+        <a href="/Menu?letter=Й">Й</a>
+        <a href="/Menu?letter=К">К</a>
+        <a href="/Menu?letter=Л">Л</a>
+        <a href="/Menu?letter=М">М</a>
+        <a href="/Menu?letter=Н">Н</a>
+        <a href="/Menu?letter=О">О</a>
+        <a href="/Menu?letter=П">П</a>
+        <a href="/Menu?letter=Р">Р</a>
+        <a href="/Menu?letter=С">С</a>
+        <a href="/Menu?letter=Т">Т</a>
+        <a href="/Menu?letter=У">У</a>
+        <a href="/Menu?letter=Ф">Ф</a>
+        <a href="/Menu?letter=Х">Х</a>
+        <a href="/Menu?letter=Ц">Ц</a>
+        <a href="/Menu?letter=Ч">Ч</a>
+        <a href="/Menu?letter=Ш">Ш</a>
+        <a href="/Menu?letter=Щ">Щ</a>
+        <a href="/Menu?letter=Э">Э</a>
+        <a href="/Menu?letter=Ю">Ю</a>
+        <a href="/Menu?letter=Я">Я</a>
+    </div>
+</div>
+
+<div class="container">
+    @foreach (var fanfic in Model)
+    {
+        <a class="pl-3" href="/Fanfic/Index/@fanfic.Id">@fanfic.Name</a>
+    }
+</div>

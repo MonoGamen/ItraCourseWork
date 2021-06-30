@@ -1,0 +1,18 @@
+﻿@model (List<BookmarkModel>, string)
+
+<div class="container-fluid">
+    @await Html.PartialAsync("UserMenuLayout")
+</div>
+
+<div class="container-fluid mt-2">
+    <h4>Bookmarks</h4>
+    <div class="mt-2 mx-md-5 border rounded">
+        @foreach (var bookmark in Model.Item1)
+        {
+            <div class="d-flex flex-wrap align-items-center justify-content-around">
+                <a href="/Fanfic/Index/@bookmark.FanficModelId">@bookmark.Fanfic.Name</a>
+                <a href="/User/BookmarkDelete/@Model.Item2/@bookmark.FanficModelId" style="color: red;">Delete</a>
+            </div>
+        }
+    </div>
+</div>
