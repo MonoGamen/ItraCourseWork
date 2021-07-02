@@ -1,8 +1,11 @@
-﻿<nav class="navbar navbar-light bg-light">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<nav class="navbar">
     @{
         var userId = Context.Request.Path.ToString().Split("/").Last();
     }
-    <a class="nav-link" href="/User/Index/@userId">Your fanfics</a>
-    <a class="nav-link" href="/User/Bookmarks/@userId">Your bookmarks and recomendations</a>
-    <a class="nav-link" href="/User/Settings/@userId">Your settings</a>
+    <a class="nav-link" href="/User/Index/@userId">@Localizer["Fanfics"]</a>
+    <a class="nav-link" href="/User/Bookmarks/@userId">@Localizer["Bookmarks"]</a>
+    <a class="nav-link" href="/User/Settings/@userId">@Localizer["Settings"]</a>
 </nav>

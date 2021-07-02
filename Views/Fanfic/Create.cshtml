@@ -1,19 +1,22 @@
-﻿@section Scripts {
+﻿@model CourseWork.Models.FanficModel
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
-
-@model CourseWork.Models.FanficModel
 
 <form method="post">
     <div>
         <div class="form-group">
-            <label asp-for="Name"></label><br />
+            <label asp-for="Name">@Localizer["Name"]</label><br />
             <input class="form-control" type="text" asp-for="Name" />
             <span asp-validation-for="Name"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Description"></label><br />
+            <label asp-for="Description">@Localizer["Description"]</label><br />
             <textarea class="form-control" asp-for="Description" rows="5"></textarea>
             <span asp-validation-for="Description"></span>
         </div>
@@ -24,8 +27,8 @@
 
             <div class="d-flex align-items-center justify-content-end">
                 <input id="inputtag" class="form-control">
-                <button type="button" class="btn btn-primary mx-1" onclick="AddTag()">Add</button>
-                <button type="button" class="btn btn-danger" onclick="ClearTags()">Clear</button>
+                <button type="button" class="btn btn-primary mx-1" onclick="AddTag()">@Localizer["Add"]</button>
+                <button type="button" class="btn btn-danger" onclick="ClearTags()">@Localizer["Clear"]</button>
             </div>
 
             <script>
@@ -33,7 +36,7 @@
                 let showTagsDiv = document.getElementById("showtagsdiv");
                 let inputTag = document.getElementById("inputtag");
                 let tags = [];
-                
+
                 function AddTag() {
                     let tagName = inputTag.value.trim();
 
@@ -67,7 +70,7 @@
         </div>
 
         <div class="form-group">
-            <input class="btn btn-primary" type="submit" value="Save" />
+            <input class="btn btn-primary" type="submit" value="@Localizer["Save"]" />
         </div>
     </div>
 </form>

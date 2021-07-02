@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -30,6 +31,7 @@ namespace CourseWork.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            DeleteSettings(HttpContext.Response.Cookies);
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
@@ -38,6 +40,12 @@ namespace CourseWork.Areas.Identity.Pages.Account
             {
                 return RedirectToPage();
             }
+        }
+
+        private void DeleteSettings(IResponseCookies cookies)
+        {
+            cookies.Delete("theme");
+            cookies.Delete(Microsoft.AspNetCore.Localization.CookieRequestCultureProvider.DefaultCookieName);
         }
     }
 }

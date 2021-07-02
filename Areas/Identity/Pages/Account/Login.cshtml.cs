@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using CourseWork.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 
 namespace CourseWork.Areas.Identity.Pages.Account
 {
@@ -20,14 +22,17 @@ namespace CourseWork.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ApplicationDbContext _dbContext;
 
         public LoginModel(SignInManager<IdentityUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _dbContext = dbContext;
         }
 
         [BindProperty]
@@ -82,8 +87,9 @@ namespace CourseWork.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    await SetSettingsAsync(Input.Email, HttpContext.Response.Cookies);
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return await LoginRedirectAsync(Input.Email, returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -103,6 +109,33 @@ namespace CourseWork.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private async Task<(Models.UserSettingsModel, IdentityUser)> GetSettingsByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var settings = _dbContext.Settings.Where(s => s.UserId == user.Id).FirstOrDefault() ?? new Models.UserSettingsModel();
+            return (settings, user);
+        }
+
+        private async Task SetSettingsAsync(string email, IResponseCookies cookies)
+        {
+            var (settings, _) = await GetSettingsByEmailAsync(email);
+            cookies.Append("theme", settings.Theme, new CookieOptions() { Expires = DateTime.MaxValue, MaxAge = TimeSpan.MaxValue });
+            cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(settings.Language)),
+                new CookieOptions { Expires = DateTime.MaxValue, IsEssential = true }
+            );
+        }
+
+        private async Task<IActionResult> LoginRedirectAsync(string email, string returnUrl)
+        {
+            var (settings, user) = await GetSettingsByEmailAsync(email);
+            if (settings.IsOnboarded)
+                return LocalRedirect(returnUrl);
+            else
+                return RedirectPermanent($"/User/Settings/{user.Id}");
         }
     }
 }

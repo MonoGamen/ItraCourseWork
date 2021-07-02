@@ -1,7 +1,11 @@
 ﻿@model (List<ChapterModel>, List<FanficModel>)
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+
 <div class="container-fluid mt-2">
-    <h4>Top of fanfics</h4>
+    <h4>@Localizer["Top"]</h4>
     <div class="mt-2 mx-md-5 border rounded">
         @foreach (var fanfic in Model.Item2)
         {
@@ -10,7 +14,7 @@
                     <a href="/Fanfic/Index/@fanfic.Id">@fanfic.Name</a>
                 </div>
                 <div class="col text-center">
-                    Rating: @fanfic.MarkAverage
+                    @Localizer["Rating"]: @fanfic.MarkAverage
                 </div>
             </div>
         }
@@ -18,7 +22,7 @@
 
     <hr>
 
-    <h4>Last modified chapters</h4>
+    <h4>@Localizer["Last"]</h4>
     <div class="mt-2 mx-md-5 border rounded">
         @foreach (var chapter in Model.Item1)
         {
@@ -27,7 +31,7 @@
                     <a href="/Chapter/Index/@chapter.Id">@chapter.Name</a>
                 </div>
                 <div class="col text-center">
-                    Date: @chapter.LastEdit.ToLongDateString()
+                    @Localizer["Date"]: @chapter.LastEdit.ToShortDateString()
                 </div>
             </div>
         }

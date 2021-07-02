@@ -1,0 +1,35 @@
+﻿@model UserSettingsModel
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="container-fluid">
+    @await Html.PartialAsync("UserMenuLayout")
+</div>
+
+<form method="post">
+    <div>
+        <div class="form-group">
+            <label>@Localizer["Theme"]</label>
+            <select class="form-control" asp-for="Theme">
+                <option value="light">@Localizer["Light"]</option>
+                <option value="dark">@Localizer["Dark"]</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Language">@Localizer["Language"]</label>
+            <select class="form-control" asp-for="Language">
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+            </select>
+        </div>
+
+        <input type="hidden" asp-for="UserId">
+        <input type="hidden" asp-for="Id">
+
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" value="@Localizer["Save"]" />
+        </div>
+    </div>
+</form>

@@ -1,5 +1,8 @@
 ﻿@model CourseWork.Models.ChapterModel
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
@@ -16,7 +19,7 @@
     let markdownDiv;
     let mdWrapper;
     let textarea;
-    let md;    
+    let md;
 
     function onCheckboxChange(event) {
         if (event.target.checked) {
@@ -48,18 +51,18 @@
 <form method="post">
     <div>
         <div class="form-group">
-            <label asp-for="Name"></label>
+            <label asp-for="Name">@Localizer["Name"]</label>
             <input class="form-control" type="text" asp-for="Name" />
             <span asp-validation-for="Name"></span>
         </div>
 
         <div class="form-group form-check">
             <input id="checkbox" class="form-check-input" type="checkbox" asp-for="IsMarkdown" />
-            <label asp-for="IsMarkdown" class="form-check-label"></label>
+            <label asp-for="IsMarkdown" class="form-check-label">@Localizer["Markdown"]</label>
         </div>
 
         <div class="form-group">
-            <label asp-for="Text"></label><br />
+            <label asp-for="Text">@Localizer["Text"]</label><br />
 
             <div class="row">
 
@@ -76,7 +79,7 @@
         </div>
 
         <div class="form-group">
-            <input class="btn btn-primary" type="submit" value="Save" />
+            <input class="btn btn-primary" type="submit" value="@Localizer["Save"]" />
         </div>
     </div>
 </form>

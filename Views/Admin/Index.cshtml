@@ -1,9 +1,12 @@
 ﻿@model (List<EditUserViewModel>, string)
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 <div class="d-flex align-items-center justify-content-end mb-2">
     <input id="searchinput" class="form-control mr-sm-2" style="width: 400px" type="search" placeholder="Search" aria-label="Search" value="@Model.Item2">
-    <button id="searchbutton" class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="Search(event)">Search</button>
-    <button id="clearbutton" class="btn btn-outline-dark my-2 my-sm-0" type="button" onclick="Clear()">Clear</button>
+    <button id="searchbutton" class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="Search(event)">@Localizer["Search"]</button>
+    <button id="clearbutton" class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="Clear()">@Localizer["Clear"]</button>
 
     <script>
         function Search(event) {
@@ -19,9 +22,10 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Email</th>
-            <th scope="col">IsBlocked</th>
-            <th scope="col">IsAdmin</th>
+            <th scope="col">@Localizer["Email"]</th>
+            <th scope="col">@Localizer["Blocking"]</th>
+            <th scope="col">@Localizer["Admin"]</th>
+            <th scope="col">@Localizer["Deleting"]</th>
         </tr>
     </thead>
     <tbody>
@@ -30,27 +34,27 @@
             <tr>
                 <td>@user.Email</td>
                 <td>
-                    @if(user.IsBlocked)
+                    @if (user.IsBlocked)
                     {
-                        <a href="/Admin/Unblock/@user.Id">Unblock user</a>
+                        <a href="/Admin/Unblock/@user.Id">@Localizer["Unblock"]</a>
                     }
                     else
                     {
-                        <a href="/Admin/Block/@user.Id">Block user</a>
+                        <a href="/Admin/Block/@user.Id">@Localizer["Block"]</a>
                     }
                 </td>
                 <td>
-                    @if(user.IsAdmin)
+                    @if (user.IsAdmin)
                     {
-                        <a href="/Admin/RemoveAdmin/@user.Id">Remove from admins</a>
+                        <a href="/Admin/RemoveAdmin/@user.Id">@Localizer["Remove"]</a>
                     }
                     else
                     {
-                        <a href="/Admin/AddAdmin/@user.Id">Add to admins</a>
+                        <a href="/Admin/AddAdmin/@user.Id">@Localizer["Add"]</a>
                     }
                 </td>
                 <td>
-                    <a href="/Admin/Delete/@user.Id">Delete user</a>
+                    <a href="/Admin/Delete/@user.Id">@Localizer["Delete"]</a>
                 </td>
             </tr>
 

@@ -1,5 +1,7 @@
 ﻿using CourseWork.Data;
 using CourseWork.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,8 +23,8 @@ namespace CourseWork.Controllers
         [Route("/")]
         public IActionResult Index()
         {
-            var lastEditChapters = _dbContext.Chapters.OrderByDescending(c => c.LastEdit).ToList();
-            var topFanfics = _dbContext.Fanfics.OrderByDescending(f => f.MarkAverage).ToList();
+            var lastEditChapters = _dbContext.Chapters.OrderByDescending(c => c.LastEdit).Take(5).ToList();
+            var topFanfics = _dbContext.Fanfics.OrderByDescending(f => f.MarkAverage).Take(5).ToList();
             return View((lastEditChapters, topFanfics));
         }
 

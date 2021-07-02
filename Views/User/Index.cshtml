@@ -1,14 +1,17 @@
 ﻿@model (List<(FanficModel, List<ChapterModel>)>, string)
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 <script>
     function confirmChapterDelete(event) {
-        if (confirm("Are you sure?")) {
+        if (confirm("@Localizer["Sure"]")) {
             window.location.href = "/Chapter/Delete/" + "@Model.Item2" + "/" + event.target.dataset.chapter;
         }
     }
 
     function confirmFanficDelete(event) {
-        if (confirm("Are you sure?")) {
+        if (confirm("@Localizer["Sure"]")) {
             window.location.href = "/Fanfic/Delete/" + "@Model.Item2" + "/" + event.target.dataset.fanfic;
         }
     }
@@ -20,21 +23,22 @@
 
 <div class="container-fluid">
     <div class="container">
-        <h3>Your fanfics:</h3><hr>
+        <h3>@Localizer["Fanfics"]</h3><hr>
 
         @foreach (var tuple in Model.Item1)
         {
-            <div class="mb-3"> 
-                <div class="row mb-2"> @*Строка фанфика*@
+            <div class="mb-3">
+                <div class="row mb-2">
+                    @*Строка фанфика*@
 
                     <div class="col-sm">
-                        <h6 class="mb-0"><a href="/Fanfic/Index/@tuple.Item1.Id" style="color: black;">@tuple.Item1.Name</a></h6>
+                        <h6 class="mb-0"><a href="/Fanfic/Index/@tuple.Item1.Id">@tuple.Item1.Name</a></h6>
                     </div>
 
                     <div class="col-sm d-flex flex-wrap">
-                        <a class="px-2" href="/Chapter/Create/@Model.Item2/@tuple.Item1.Id">Add new chapter</a>
-                        <a class="px-2" href="/Fanfic/Edit/@Model.Item2/@tuple.Item1.Id">Edit</a>
-                        <button class="btn btn-danger py-0" onclick="confirmFanficDelete(event)" data-fanfic="@tuple.Item1.Id">Delete</button>
+                        <a class="px-2" href="/Chapter/Create/@Model.Item2/@tuple.Item1.Id">@Localizer["AddChapter"]</a>
+                        <a class="px-2" href="/Fanfic/Edit/@Model.Item2/@tuple.Item1.Id">@Localizer["Edit"]</a>
+                        <button class="btn btn-danger py-0" onclick="confirmFanficDelete(event)" data-fanfic="@tuple.Item1.Id">@Localizer["Delete"]</button>
                     </div>
 
                 </div>
@@ -42,13 +46,14 @@
                 <div>
                     @foreach (var c in tuple.Item2)
                     {
-                        <div class="row"> @*Строки глав*@
+                        <div class="row">
+                            @*Строки глав*@
                             <div class="col-sm">
                                 <a href="/Chapter/Index/@c.Id"><p class="pl-3 mb-0">@c.Name</p></a>
                             </div>
                             <div class="col-sm d-flex flex-wrap align-items-center">
-                                <a class="px-2" href="/Chapter/Edit/@Model.Item2/@c.Id">Edit</a>
-                                <button class="btn btn-danger py-0" onclick="confirmChapterDelete(event)" data-chapter="@c.Id">Delete</button>
+                                <a class="px-2" href="/Chapter/Edit/@Model.Item2/@c.Id">@Localizer["Edit"]</a>
+                                <button class="btn btn-danger py-0" onclick="confirmChapterDelete(event)" data-chapter="@c.Id">@Localizer["Delete"]</button>
                             </div>
                         </div>
                     }
@@ -56,7 +61,7 @@
             </div>
         }
         <div class="d-flex flex-wrap justify-content-between">
-            <a href="/Fanfic/Create/@Model.Item2">Create new fanfic</a>
+            <a href="/Fanfic/Create/@Model.Item2">@Localizer["NewFanfic"]</a>
         </div>
     </div>
 </div>
