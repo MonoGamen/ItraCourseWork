@@ -126,6 +126,9 @@
   <data name="Description" xml:space="preserve">
     <value>Описание</value>
   </data>
+  <data name="Fandom" xml:space="preserve">
+    <value>Фэндом</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Название</value>
   </data>

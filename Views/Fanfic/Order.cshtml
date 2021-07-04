@@ -1,0 +1,61 @@
+﻿@model List<ChapterModel>
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<script>
+    let phase = 0;
+    let lastNode = null;
+
+    function chapterClick(event) {
+        let node = event.target;
+
+        if (phase == 0) {
+            lastNode = node;
+            node.classList.add("border-secondary");
+            phase = 1;
+        }
+        else {
+            let currentOrder = node.style.order;
+            node.style.order = lastNode.style.order;
+            lastNode.style.order = currentOrder;
+
+            lastNode.classList.remove("border-secondary")
+            lastNode = null;
+
+            phase = 0;
+        }
+    }
+
+    function refreshIndexes() {
+        let inputs = document.getElementsByTagName("input");
+        for (let input of inputs) {
+            console.log(input);
+            console.log(input.parentElement);
+            console.log(input.parentElement.style.order);
+
+            input.value = input.parentElement.style.order;
+        }
+        return true;
+    }
+
+
+</script>
+
+<div class="container">
+    <p>@Localizer["Info"]</p>
+    <form method="post" onsubmit="refreshIndexes()">
+        <div class="d-flex flex-column form-group">
+            @foreach (var chapter in Model)
+            {
+                <div class="p-2 mb-1 border border-3 rounded border-primary" style="order: @chapter.Index" onclick="chapterClick(event)">
+                    @chapter.Name
+                    <input type="text" name="newOrder" hidden>
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" value="@Localizer["Save"]" />
+        </div>
+    </form>
+</div>

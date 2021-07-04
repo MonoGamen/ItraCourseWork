@@ -126,4 +126,7 @@
   <data name="Average" xml:space="preserve">
     <value>Средний рейтинг</value>
   </data>
+  <data name="Fandom" xml:space="preserve">
+    <value>Фэндом</value>
+  </data>
 </root>

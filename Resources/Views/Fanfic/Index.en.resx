@@ -126,4 +126,7 @@
   <data name="Average" xml:space="preserve">
     <value>Average rating</value>
   </data>
+  <data name="Fandom" xml:space="preserve">
+    <value>Fandom</value>
+  </data>
 </root>

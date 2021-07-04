@@ -1,3 +1,4 @@
+using CourseWork.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +25,8 @@ namespace CourseWork
                 {
                     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
                     var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    await Helper.InitializeDb.InitializeAsync(userManager, rolesManager);
+                    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+                    await Helper.InitializeDb.InitializeAsync(userManager, rolesManager, dbContext);
                 }
                 catch (Exception) 
                 { }

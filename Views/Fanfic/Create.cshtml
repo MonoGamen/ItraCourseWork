@@ -2,6 +2,8 @@
 
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@using CourseWork.Data
+@inject ApplicationDbContext DbContext
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
@@ -67,6 +69,17 @@
                     tags = [];
                 }
             </script>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="FandomModelId">@Localizer["Fandom"]</label><br />
+            <select class="form-control" asp-for="FandomModelId">
+                @foreach (var fandom in DbContext.Fandoms)
+                {
+                    <option value="@fandom.Id">@fandom.Name</option>
+                }
+            </select>
+            <span asp-validation-for="FandomModelId"></span>
         </div>
 
         <div class="form-group">

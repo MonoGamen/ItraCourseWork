@@ -2,6 +2,8 @@
 
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@using CourseWork.Data
+@inject ApplicationDbContext DbContext
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
@@ -22,7 +24,6 @@
         </div>
 
         <input type="hidden" asp-for="Fanfic.Id">
-        <input type="hidden" asp-for="Fanfic.FandomModelId">
         <input type="hidden" asp-for="Fanfic.UserId">
         <input type="hidden" asp-for="Fanfic.MarkAverage">
         <input type="hidden" asp-for="Fanfic.MarkCount">
@@ -87,6 +88,16 @@
             </script>
         </div>
 
+        <div class="form-group">
+            <label asp-for="Fanfic.FandomModelId">@Localizer["Fandom"]</label><br />
+            <select class="form-control" asp-for="Fanfic.FandomModelId">
+                @foreach (var fandom in DbContext.Fandoms)
+                {
+                    <option value="@fandom.Id">@fandom.Name</option>
+                }
+            </select>
+            <span asp-validation-for="Fanfic.FandomModelId"></span>
+        </div>
 
         <div class="form-group">
             <input class="btn btn-primary" type="submit" value="@Localizer["Save"]" />

@@ -126,6 +126,9 @@
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="Fandom" xml:space="preserve">
+    <value>Fandom</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Title</value>
   </data>

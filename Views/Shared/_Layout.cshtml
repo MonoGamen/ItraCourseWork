@@ -16,19 +16,33 @@
             ));
             return matches ? decodeURIComponent(matches[1]) : undefined;
         }
+    </script>
 
+    <script>
         if (getCookie("theme") == "dark") {
-            var head = document.getElementsByTagName('head')[0];
             var link = document.createElement('link');
             link.rel = 'stylesheet';
             link.type = 'text/css';
             link.href = '/lib/bootstrap/dist/css/bootstrap-dark.min.css';
             link.media = 'all';
-            head.appendChild(link);
+            document.head.appendChild(link);
         }
     </script>
 
     <link rel="stylesheet" href="~/css/site.css" />
+
+    <script>
+        if (getCookie("theme") == "dark") {
+            const style = document.createElement('style');
+            style.innerHTML = `
+              a {
+                color: white;
+                text-decoration: none;
+              }
+            `;
+            document.head.appendChild(style);
+        }
+    </script>
 </head>
 <body>
     <header>

@@ -3,6 +3,7 @@ using CourseWork.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace CourseWork.Controllers
         [AllowAnonymous]
         public IActionResult Index(int fanficId)
         {
-            var fanfic = _dbContext.Fanfics.FirstOrDefault(f => f.Id == fanficId);
+            var fanfic = _dbContext.Fanfics.Include(f => f.Fandom).FirstOrDefault(f => f.Id == fanficId);
             if (fanfic == null)
                 return NotFound();
 
@@ -118,6 +119,37 @@ namespace CourseWork.Controllers
             }
             return RedirectPermanent($"/Fanfic/Index/{fanficId}");
         }
+
+        [Route("Order/{urlUserId}/{fanficId:min(1)}")]
+        [HttpGet]
+        public async Task<IActionResult> OrderAsync([FromRoute] string urlUserId, int fanficId)
+        {
+            var fanfic = _dbContext.Fanfics.FirstOrDefault(f => f.Id == fanficId);
+            if(!await IsValid(HttpContext.User, urlUserId, fanfic))
+                return NotFound();
+
+            var chapters = _dbContext.Chapters.Where(c => c.FanficModelId == fanficId).OrderBy(c => c.Index).ToList();
+            return View(chapters);
+        }
+
+        [Route("Order/{urlUserId}/{fanficId:min(1)}")]
+        [HttpPost]
+        public async Task<IActionResult> OrderAsync([FromRoute] string urlUserId, int fanficId, int[] newOrder)
+        {
+            var fanfic = _dbContext.Fanfics.FirstOrDefault(f => f.Id == fanficId);
+            if(!await IsValid(HttpContext.User, urlUserId, fanfic))
+                return NotFound();
+
+            var chapters = _dbContext.Chapters.Where(c => c.FanficModelId == fanficId).OrderBy(c => c.Index).ToList();
+            foreach (var item in chapters.Zip(newOrder, (c, o) => new { Chapter = c, NewOrder = o }))
+            {
+                item.Chapter.Index = item.NewOrder;
+            }
+            _dbContext.SaveChanges();
+
+            return RedirectPermanent($"/User/Index/{urlUserId}");
+        }
+
 
         private async Task<bool> IsValid(ClaimsPrincipal principal, string urlUserId, FanficModel model)
         {

@@ -118,7 +118,7 @@ namespace CourseWork.Controllers
             var output = new List<(FanficModel, List<ChapterModel>)>();
             foreach (var f in fanfics)
             {
-                var chapters = await _dbContext.Chapters.Include(c => c.Fanfic).Where(c => c.Fanfic.Id == f.Id).ToListAsync();
+                var chapters = await _dbContext.Chapters.Include(c => c.Fanfic).Where(c => c.Fanfic.Id == f.Id).OrderBy(c => c.Index).ToListAsync();
                 output.Add((f, chapters));
             }
             return output;

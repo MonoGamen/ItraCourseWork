@@ -132,6 +132,9 @@
   <data name="NewFanfic" xml:space="preserve">
     <value>Создать новый фанфик</value>
   </data>
+  <data name="Order" xml:space="preserve">
+    <value>Изменить порядок</value>
+  </data>
   <data name="Sure" xml:space="preserve">
     <value>Вы уверены?</value>
   </data>

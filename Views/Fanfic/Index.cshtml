@@ -71,20 +71,27 @@
         }
     </div>
 
-    @if (User.Identity.IsAuthenticated)
-    {
-        <div class="d-flex flex-wrap justify-content-end align-items-center my-2">
+    
+    <div class="d-flex flex-wrap justify-content-between align-items-center my-2">
+        <div>
+            @Localizer["Fandom"]: @Model.Item1.Fandom.Name
+        </div>
+
+        <div>
             @*Закладки*@
-            @if (Model.Item4)
+            @if (User.Identity.IsAuthenticated)
             {
-                <p>@Localizer["Added"]</p>
-            }
-            else
-            {
-                <a href="/Fanfic/Bookmark/@Model.Item1.Id">@Localizer["Add"]</a>
+                @if (Model.Item4)
+                {
+                    <p>@Localizer["Added"]</p>
+                }
+                else
+                {
+                    <a href="/Fanfic/Bookmark/@Model.Item1.Id">@Localizer["Add"]</a>
+                }
             }
         </div>
-    }
+    </div>
 
 
     <div class="d-flex flex-wrap justify-content-start align-items-center my-2">
@@ -100,7 +107,7 @@
     <div class="p-2">
         @*Описание*@
         @Model.Item1.Description
-    </div>
+    </div><hr>
 
     <div class="p-2 pl-4">
         @*Главы*@
