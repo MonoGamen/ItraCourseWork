@@ -54,7 +54,8 @@ namespace CourseWork.Controllers
             var chapter = _dbContext.Chapters.Include(c => c.Fanfic).FirstOrDefault(c => c.Id == chapterId);
             if (chapter == null)
                 return NotFound();
-            return View(chapter);
+
+            return View((chapter, GetPrevAndNext(chapter)));
         }
 
 
@@ -154,6 +155,15 @@ namespace CourseWork.Controllers
             model.LastEdit = DateTime.Now;
             _dbContext.Chapters.Update(model);
             _dbContext.SaveChanges();
+        }
+        private (int, int) GetPrevAndNext(ChapterModel chapter)
+        {
+            int count = _dbContext.Chapters.Where(c => c.FanficModelId == chapter.FanficModelId).Count();
+            int prevIndex = chapter.Index - 1 < 0 ? 0 : chapter.Index - 1;
+            int nextIndex = chapter.Index + 1 == count ? chapter.Index : chapter.Index + 1;
+            int prevId = _dbContext.Chapters.Where(c => c.FanficModelId == chapter.FanficModelId && c.Index == prevIndex).First().Id;
+            int nextId = _dbContext.Chapters.Where(c => c.FanficModelId == chapter.FanficModelId && c.Index == nextIndex).First().Id; 
+            return (prevId, nextId);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

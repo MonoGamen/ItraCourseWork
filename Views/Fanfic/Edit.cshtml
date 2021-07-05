@@ -45,7 +45,15 @@
             </div>
 
             <div class="d-flex align-items-center justify-content-end">
-                <input id="inputtag" class="form-control">
+                <input id="inputtag" list="tagslist" class="form-control">
+
+                <datalist id="tagslist">
+                    @foreach (var tag in DbContext.Tags.Select(t => t.Name).Distinct())
+                    {
+                        <option value="@tag"></option>
+                    }
+                </datalist>
+
                 <button type="button" class="btn btn-primary mx-1" onclick="AddTag()">@Localizer["Add"]</button>
                 <button type="button" class="btn btn-danger" onclick="ClearTags()">@Localizer["Clear"]</button>
             </div>
