@@ -1,9 +1,11 @@
 using CourseWork.Data;
+using CourseWork.Helper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,9 +22,11 @@ namespace CourseWork
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+         private IWebHostEnvironment _webHostEnvironment { get; }
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IConfiguration Configuration { get; }
@@ -33,11 +37,21 @@ namespace CourseWork
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    {
+            //        string databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            //        string connectionString = ApplicationDbContext.GetNpgsqlConnectionString(databaseUrl, _webHostEnvironment.IsDevelopment());
+            //        options.UseNpgsql(connectionString);
+            //    }
+            //);
+
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultUI()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.Configure<IdentityOptions>(options => { options.Password.RequireNonAlphanumeric = false; options.Password.RequireUppercase = false; });
+
+            services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
@@ -97,6 +111,7 @@ namespace CourseWork
                 endpoints.MapRazorPages();
                 endpoints.MapHub<Hubs.LikeHub>("/Like");
                 endpoints.MapHub<Hubs.MarkHub>("/Mark");
+                endpoints.MapHub<Hubs.CommentHub>("/Comment");
             });
         }
     }

@@ -39,6 +39,11 @@ namespace CourseWork
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    //var port = Environment.GetEnvironmentVariable("PORT");
+                    //if (port != null)
+                    //{
+                    //    webBuilder.UseUrls(new string[] { $"http://*:{port}" });
+                    //}
                     webBuilder.UseStartup<Startup>();
                 });
     }

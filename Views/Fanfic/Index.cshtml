@@ -2,7 +2,11 @@
 
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@using CourseWork.Data
+@inject ApplicationDbContext DbContext
 
+
+    <script src="/lib/signalr/dist/browser/signalr.min.js"></script>
 <div class="controller">
 
     <div class="d-flex flex-wrap justify-content-between align-items-center my-2">
@@ -21,7 +25,6 @@
                 <img class="mr-2 markimg" height="40" src="/images/emptystar.png" data-mark="5" />
             </div>
 
-            <script src="/lib/signalr/dist/browser/signalr.min.js"></script>
             <script>
                 let mark = 0;
                 let images = document.getElementsByClassName("markimg");
@@ -71,7 +74,7 @@
         }
     </div>
 
-    
+
     <div class="d-flex flex-wrap justify-content-between align-items-center my-2">
         <div>
             @Localizer["Fandom"]: @Model.Item1.Fandom.Name
@@ -110,10 +113,84 @@
     </div><hr>
 
     <div class="p-2 pl-4">
+        <h5>@Localizer["Chapters"]</h5>
         @*Главы*@
         @foreach (var chapter in Model.Item2)
         {
             <p><a href="/Chapter/Index/@chapter.Id">@chapter.Name</a></p>
+        }
+    </div><hr>
+
+    <h5>@Localizer["Comments"]</h5>
+    <div class="mt-1">
+        @*Комменты*@
+        <div id="commentcontainer" class="px-2">
+            @{
+                var comments = DbContext.Comments.Where(c => c.FanficModelId == Model.Item1.Id).OrderBy(c => c.Date).ToList();
+                foreach (var comment in comments)
+                {
+                    <div class="border border-secondary rounded p-2 mb-1">
+                        <div class="d-flex justify-content-between">
+                            <p>@comment.UserName</p>
+                            <p>@comment.Date</p>
+                        </div>
+                        <div>
+                            @comment.Text
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <script>
+            const commentHubConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/Comment?fanficId=" + "@Model.Item1.Id")
+                .build();
+
+            commentHubConnection.on('AddNewComment', function (text, username, date) {
+                let container = document.getElementById("commentcontainer");
+
+                let commentDiv = document.createElement("div");
+                commentDiv.classList.add("border", "border-secondary", "rounded", "p-2", "mb-1");
+
+                let firstDiv = document.createElement("div");
+                firstDiv.classList.add("d-flex", "justify-content-between");
+
+                let firstP = document.createElement("p");
+                firstP.innerHTML = username;
+                firstDiv.appendChild(firstP);
+
+                let secondP = document.createElement("p");
+                secondP.innerHTML = date;
+                firstDiv.appendChild(secondP);
+
+                commentDiv.appendChild(firstDiv);
+
+                let secondDiv = document.createElement("div");
+                secondDiv.innerHTML = text;
+
+                commentDiv.appendChild(secondDiv);
+                container.appendChild(commentDiv);
+            });
+
+            commentHubConnection.start();
+        </script>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <script>
+                function SendComment()
+                {
+                    let text = document.getElementById("commenttextarea").value;
+                    let username = "@User.Identity.Name";
+                    commentHubConnection.invoke("SendComment", text, username);
+                }
+            </script>
+            <div>
+                <textarea id="commenttextarea" class="form-control">
+                </textarea>
+                <input type="button" class="form-control" value="@Localizer["Send"]" onclick="SendComment()">
+            </div>
         }
     </div>
 </div>

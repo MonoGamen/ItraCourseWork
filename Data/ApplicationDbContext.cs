@@ -1,6 +1,7 @@
 ﻿using CourseWork.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,10 +18,34 @@ namespace CourseWork.Data
         public DbSet<LikeModel> Likes { get; set; }
         public DbSet<BookmarkModel> Bookmarks { get; set; }
         public DbSet<UserSettingsModel> Settings { get; set; }
+        public DbSet<CommentModel> Comments { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();
+        }
+
+        public static string GetNpgsqlConnectionString(string databaseUrl, bool dev)
+        {
+            var databaseUri = new Uri(databaseUrl);
+            var userInfo = databaseUri.UserInfo.Split(':');
+            var builder = new NpgsqlConnectionStringBuilder
+            {
+                Host = databaseUri.Host,
+                Port = databaseUri.Port,
+                Username = userInfo[0],
+                Password = userInfo[1],
+                Database = databaseUri.LocalPath.TrimStart('/')
+            };
+
+            if (!dev)
+            {
+                builder.Pooling = true;
+                builder.SslMode = SslMode.Require;
+                builder.TrustServerCertificate = true;
+            }
+
+            return builder.ToString();
         }
     }
 }
