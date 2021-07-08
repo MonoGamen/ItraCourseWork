@@ -52,6 +52,7 @@ namespace CourseWork
             services.Configure<IdentityOptions>(options => { options.Password.RequireNonAlphanumeric = false; options.Password.RequireUppercase = false; });
 
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<PdfConverter>();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()

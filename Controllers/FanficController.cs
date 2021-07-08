@@ -1,4 +1,5 @@
 ﻿using CourseWork.Data;
+using CourseWork.Helper;
 using CourseWork.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -148,6 +150,19 @@ namespace CourseWork.Controllers
             _dbContext.SaveChanges();
 
             return RedirectPermanent($"/User/Index/{urlUserId}");
+        }
+
+        [Route("Pdf/{id:min(1)}")]
+        [AllowAnonymous]
+        public IActionResult GetPdf(int id, PdfConverter pdfConverter)
+        {
+            var fanfic = _dbContext.Fanfics.Where(f => f.Id == id).FirstOrDefault();
+            if (fanfic == null)
+                return NotFound();
+
+            var chapters = _dbContext.Chapters.Where(c => c.FanficModelId == id).OrderBy(c => c.Index).ToList();
+            byte[] fileArray = pdfConverter.GetPdf(chapters, fanfic.Name);
+            return new FileContentResult(fileArray, "application/pdf");
         }
 
 
