@@ -17,6 +17,7 @@ namespace CourseWork.Models
         [Required]
         public string Text { get; set; }
         public string Image { get; set; }
+        public string ImagePublicId { get; set; }
         public int FanficModelId { get; set; }
         public FanficModel Fanfic { get; set; } 
         public DateTime LastEdit { get; set; }

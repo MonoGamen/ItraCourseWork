@@ -54,6 +54,13 @@
                             </div>
                             <div class="col-sm d-flex flex-wrap align-items-center">
                                 <a class="px-2" href="/Chapter/Edit/@Model.Item2/@c.Id">@Localizer["Edit"]</a>
+
+                                @{ 
+                                    string imageAction = c.Image == null ? "AddImage" : "RemoveImage";
+                                    var imageActionTitle = c.Image == null ? Localizer["AddImage"] : Localizer["RemoveImage"];
+                                }
+                                <a class="px-2" href="/Chapter/@imageAction/@Model.Item2/@c.Id">@imageActionTitle</a>
+
                                 <button class="btn btn-danger py-0" onclick="confirmChapterDelete(event)" data-chapter="@c.Id">@Localizer["Delete"]</button>
                             </div>
                         </div>

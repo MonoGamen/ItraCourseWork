@@ -34,16 +34,16 @@ namespace CourseWork
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
             //services.AddDbContext<ApplicationDbContext>(options =>
-            //    {
-            //        string databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-            //        string connectionString = ApplicationDbContext.GetNpgsqlConnectionString(databaseUrl, _webHostEnvironment.IsDevelopment());
-            //        options.UseNpgsql(connectionString);
-            //    }
-            //);
+            //    options.UseSqlServer(
+            //        Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options =>
+                {
+                    string databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+                    string connectionString = ApplicationDbContext.GetNpgsqlConnectionString(databaseUrl, _webHostEnvironment.IsDevelopment());
+                    options.UseNpgsql(connectionString);
+                }
+            );
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultUI()
@@ -53,6 +53,7 @@ namespace CourseWork
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<PdfConverter>();
+            services.AddSingleton<ImageManager>();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()

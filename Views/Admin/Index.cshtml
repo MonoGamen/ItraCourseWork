@@ -32,7 +32,9 @@
         @foreach (var user in Model.Item1)
         {
             <tr>
-                <td>@user.Email</td>
+                <td>
+                    <a href="/User/Index/@user.Id">@user.Email</a>
+                </td>
                 <td>
                     @if (user.IsBlocked)
                     {

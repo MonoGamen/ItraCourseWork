@@ -120,6 +120,9 @@
   <data name="AddChapter" xml:space="preserve">
     <value>Add new chapter</value>
   </data>
+  <data name="AddImage" xml:space="preserve">
+    <value>Add image</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="Order" xml:space="preserve">
     <value>Change order</value>
+  </data>
+  <data name="RemoveImage" xml:space="preserve">
+    <value>Remove image</value>
   </data>
   <data name="Sure" xml:space="preserve">
     <value>Are you sure?</value>

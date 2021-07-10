@@ -117,31 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddChapter" xml:space="preserve">
-    <value>Добавить новую главу</value>
-  </data>
-  <data name="AddImage" xml:space="preserve">
-    <value>Добавить изображение</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Удалить</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Редактировать</value>
-  </data>
-  <data name="Fanfics" xml:space="preserve">
-    <value>Ваши фанфики</value>
-  </data>
-  <data name="NewFanfic" xml:space="preserve">
-    <value>Создать новый фанфик</value>
-  </data>
-  <data name="Order" xml:space="preserve">
-    <value>Изменить порядок</value>
-  </data>
-  <data name="RemoveImage" xml:space="preserve">
-    <value>Удалить изображение</value>
-  </data>
-  <data name="Sure" xml:space="preserve">
-    <value>Вы уверены?</value>
+  <data name="Drop" xml:space="preserve">
+    <value>Drop image here or click to upload</value>
   </data>
 </root>

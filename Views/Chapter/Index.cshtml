@@ -47,8 +47,14 @@
         </div>
         <hr style="margin: 0">
 
-        <div class="my-2 p-1">
+        <div class="my-2 p-2" style="overflow: auto">
             @*Текст главы*@
+
+            @if (Model.Item1.Image != null)
+            {
+                <img class="w-25" src="@Model.Item1.Image" style="float:left" />
+            }
+                
             @if (Model.Item1.IsMarkdown)
             {
                 <div id="chapterdiv">@Model.Item1.Text</div>

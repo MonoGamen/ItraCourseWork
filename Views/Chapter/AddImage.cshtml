@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+
+<link href="/lib/dropzone/min/dropzone.min.css" rel="stylesheet">
+<script src="/lib/dropzone/min/dropzone.min.js"></script>
+
+
+<h2>@ViewData["Chapter"]</h2>
+
+<form action="@ViewData["Action"]" class="dropzone" id="uploader">
+    <div class="dz-message" data-dz-message><span>@Localizer["Drop"]</span></div>
+</form>
+
+<script>
+    Dropzone.options.uploader = {
+        maxFiles: 1,
+        acceptedFiles: ".jpeg,.jpg,.png",
+        init: function () {
+            this.on("success", () => { document.location.href = "@ViewData["ReturnUrl"]"; });
+        }
+    };
+</script>
